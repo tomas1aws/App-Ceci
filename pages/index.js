@@ -27,9 +27,14 @@ export default function HomePage() {
     <main className="mx-auto min-h-screen max-w-5xl p-4">
       <header className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold">App-Ceci · Biblioteca</h1>
-        <Link href="/new" className="rounded bg-orange-500 px-4 py-2 text-white">
-          + Nuevo
-        </Link>
+        <div className="flex gap-2">
+          <Link href="/debug" className="rounded border border-orange-500 px-4 py-2 text-orange-600">
+            Debug
+          </Link>
+          <Link href="/new" className="rounded bg-orange-500 px-4 py-2 text-white">
+            + Nuevo
+          </Link>
+        </div>
       </header>
 
       {loading && <p>Cargando alfajores...</p>}

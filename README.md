@@ -4,6 +4,11 @@ App de Next.js para registrar y calificar alfajores con Supabase.
 
 > Nota: la PWA y el Service Worker fueron deshabilitados temporalmente para evitar interceptaciones de red que generaban errores `TypeError: Failed to fetch` en requests a Supabase.
 
+## ⚠️ Seguridad de keys
+- Usar en cliente **solo** `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+- **Nunca** usar `sb_secret_...`, `service_role` ni ninguna secret key en frontend.
+- Si una secret key fue cargada en Vercel, eliminarla de variables públicas y rotarla.
+
 ## Stack
 - Next.js (pages router)
 - TailwindCSS
@@ -73,19 +78,26 @@ npm run build
 npm start
 ```
 
-## Deploy en Vercel
+## Deploy en Vercel (pasos recomendados)
 1. Importar repo en Vercel.
-2. Configurar variables de entorno:
+2. Configurar variables de entorno de proyecto (Production y Preview):
    - `NEXT_PUBLIC_SUPABASE_URL`
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-3. Deploy.
+3. Forzar redeploy luego de guardar variables.
+4. Abrir `/debug` y correr diagnóstico.
+5. Interpretación rápida:
+   - Si frontend falla y `/api/supabase-ping` responde OK: problema de navegador (SW/cache/extensión/CORS en browser).
+   - Si frontend y server fallan: problema de URL/key/env o Supabase caído/no alcanzable.
+   - Si da `401/403`: key inválida o políticas/permisos de tabla/bucket.
 
 ## Estructura
 
 ```txt
 /pages
   index.js
+  debug.js
   new.js
+  /api/supabase-ping.js
   /alfajores/[id].js
   /edit/[id].js
 /components
