@@ -1,5 +1,3 @@
-'use client'
-
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import AlfajorCard from '../components/AlfajorCard'
@@ -44,8 +42,6 @@ export default function HomePage() {
           <AlfajorCard key={alfajor.id} alfajor={alfajor} />
         ))}
       </section>
-
-      {!loading && !error && alfajores.length === 0 && <p className="mt-6">Todavía no hay alfajores cargados.</p>}
     </main>
   )
 }

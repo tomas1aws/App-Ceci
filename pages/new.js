@@ -1,16 +1,14 @@
-'use client'
-
+import { useRouter } from 'next/router'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import AlfajorForm from '../../components/AlfajorForm'
-import { createAlfajor } from '../../lib/alfajoresApi'
+import AlfajorForm from '../components/AlfajorForm'
+import { createAlfajor } from '../lib/alfajoresApi'
 
 export default function NewAlfajorPage() {
   const router = useRouter()
 
   async function handleCreate(payload) {
     const created = await createAlfajor(payload)
-    router.push(`/alfajor/${created.id}`)
+    router.push(`/alfajores/${created.id}`)
   }
 
   return (
