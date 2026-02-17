@@ -35,17 +35,21 @@ export default function AlfajorDetailPage() {
   async function handleDelete() {
     setError('')
 
-    if (!id) {
-      setError('Missing alfajor id')
+    const deleteId = alfajor?.id ?? id
+
+    if (!deleteId || typeof deleteId !== 'string') {
+      setError('ID faltante')
       return
     }
 
     if (!window.confirm('¿Eliminar este alfajor?')) return
 
+    console.log('DELETE id:', deleteId)
+
     try {
-      await deleteAlfajor(id, alfajor?.image_path)
+      await deleteAlfajor(deleteId, alfajor?.image_path)
       await router.push('/')
-      router.reload()
+      router.refresh?.()
     } catch (err) {
       setError(err.message)
     }

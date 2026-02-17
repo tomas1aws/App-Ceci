@@ -30,10 +30,14 @@ export default function EditAlfajorPage() {
     setError('')
     setSuccessMessage('')
 
-    if (!id) {
-      setError('Missing alfajor id')
+    const editId = alfajor?.id ?? id
+
+    if (!editId || typeof editId !== 'string') {
+      setError('ID faltante')
       return
     }
+
+    console.log('EDIT id:', editId)
 
     try {
       const normalizedPayload = {
@@ -48,9 +52,9 @@ export default function EditAlfajorPage() {
         normalizedPayload.image_path = payload.image_path
       }
 
-      const updated = await updateAlfajor(id, normalizedPayload)
+      const updated = await updateAlfajor(editId, normalizedPayload)
       setSuccessMessage('Alfajor actualizado correctamente')
-      router.push(`/alfajores/${updated.id}`)
+      router.push(`/alfajores/${editId}`)
     } catch (err) {
       setError(err.message)
       throw err
@@ -64,7 +68,7 @@ export default function EditAlfajorPage() {
     <main className="mx-auto min-h-screen max-w-xl p-4">
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-bold">Editar Alfajor</h1>
-        <Link href={`/alfajores/${id}`} className="text-orange-600">
+        <Link href={`/alfajores/${alfajor?.id ?? id}`} className="text-orange-600">
           Volver
         </Link>
       </div>
