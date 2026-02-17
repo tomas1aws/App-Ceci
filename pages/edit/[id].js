@@ -9,6 +9,7 @@ export default function EditAlfajorPage() {
   const { id } = router.query
   const [alfajor, setAlfajor] = useState(null)
   const [error, setError] = useState('')
+  const [successMessage, setSuccessMessage] = useState('')
 
   useEffect(() => {
     if (!id) return
@@ -26,11 +27,37 @@ export default function EditAlfajorPage() {
   }, [id])
 
   async function handleUpdate(payload) {
-    await updateAlfajor(id, payload)
-    router.push(`/alfajores/${id}`)
+    setError('')
+    setSuccessMessage('')
+
+    if (!id) {
+      setError('Missing alfajor id')
+      return
+    }
+
+    try {
+      const normalizedPayload = {
+        name: payload.name,
+        brand: payload.brand,
+        rating: payload.rating,
+        review: payload.review,
+        degustado_en: payload.degustado_en || null,
+      }
+
+      if (payload.image_path && payload.image_path !== alfajor?.image_path) {
+        normalizedPayload.image_path = payload.image_path
+      }
+
+      const updated = await updateAlfajor(id, normalizedPayload)
+      setSuccessMessage('Alfajor actualizado correctamente')
+      router.push(`/alfajores/${updated.id}`)
+    } catch (err) {
+      setError(err.message)
+      throw err
+    }
   }
 
-  if (error) return <main className="p-4 text-red-600">{error}</main>
+  if (error && !alfajor) return <main className="p-4 text-red-600">{error}</main>
   if (!alfajor) return <main className="p-4">Cargando...</main>
 
   return (
@@ -42,6 +69,8 @@ export default function EditAlfajorPage() {
         </Link>
       </div>
       <AlfajorForm initialValues={alfajor} onSubmit={handleUpdate} submitText="Guardar cambios" />
+      {successMessage && <p className="mt-3 text-sm text-green-700">{successMessage}</p>}
+      {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
     </main>
   )
 }
