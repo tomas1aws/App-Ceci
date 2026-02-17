@@ -1,12 +1,13 @@
 # App-Ceci
 
-App móvil/PWA en Next.js para registrar y calificar alfajores con Supabase.
+App de Next.js para registrar y calificar alfajores con Supabase.
+
+> Nota: la PWA y el Service Worker fueron deshabilitados temporalmente para evitar interceptaciones de red que generaban errores `TypeError: Failed to fetch` en requests a Supabase.
 
 ## Stack
 - Next.js (pages router)
 - TailwindCSS
 - Supabase (Database + Storage)
-- next-pwa para service worker y manifest
 
 ## Requisitos
 1. Node.js 18+
@@ -57,10 +58,17 @@ to public
 with check (bucket_id = 'alfajores');
 ```
 
-## Scripts
+## Desarrollo local (sin PWA)
+La app corre como una app estándar de Next.js, sin Service Worker:
+
 ```bash
 npm install
 npm run dev
+```
+
+## Build y producción
+
+```bash
 npm run build
 npm start
 ```
@@ -71,8 +79,6 @@ npm start
    - `NEXT_PUBLIC_SUPABASE_URL`
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 3. Deploy.
-
-4. (Opcional debug PWA) `NEXT_PUBLIC_DISABLE_PWA=true` para desactivar el service worker temporalmente y validar issues de red.
 
 ## Estructura
 
@@ -89,20 +95,6 @@ npm start
 /lib
   supabaseClient.js
   alfajoresApi.js
-/public
-  manifest.json
-  /icons
 /styles
   globals.css
 ```
-
-
-## Debug de PWA / Service Worker
-
-Si necesitás aislar errores de fetch (ej. Supabase) y validar comportamiento sin service worker:
-
-1. En Vercel, agregá la variable de entorno `NEXT_PUBLIC_DISABLE_PWA` con valor `true`.
-2. Redeploy del proyecto.
-3. Verificá que el SW ya no se registre y repetí la prueba.
-
-Para volver al comportamiento normal de PWA, quitá la variable (o seteala en `false`) y redeploy.
