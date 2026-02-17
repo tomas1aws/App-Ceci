@@ -72,6 +72,8 @@ npm start
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 3. Deploy.
 
+4. (Opcional debug PWA) `NEXT_PUBLIC_DISABLE_PWA=true` para desactivar el service worker temporalmente y validar issues de red.
+
 ## Estructura
 
 ```txt
@@ -93,3 +95,14 @@ npm start
 /styles
   globals.css
 ```
+
+
+## Debug de PWA / Service Worker
+
+Si necesitás aislar errores de fetch (ej. Supabase) y validar comportamiento sin service worker:
+
+1. En Vercel, agregá la variable de entorno `NEXT_PUBLIC_DISABLE_PWA` con valor `true`.
+2. Redeploy del proyecto.
+3. Verificá que el SW ya no se registre y repetí la prueba.
+
+Para volver al comportamiento normal de PWA, quitá la variable (o seteala en `false`) y redeploy.
