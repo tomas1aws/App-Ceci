@@ -4,6 +4,13 @@ import { useEffect, useState } from 'react'
 import StarRating from '../../components/StarRating'
 import { deleteAlfajor, fetchAlfajorById } from '../../lib/alfajoresApi'
 
+function formatDegustadoEn(degustadoEn) {
+  if (!degustadoEn) return '—'
+
+  const formatted = new Date(`${degustadoEn}T00:00:00`).toLocaleDateString('es-AR')
+  return formatted === 'Invalid Date' ? '—' : formatted
+}
+
 export default function AlfajorDetailPage() {
   const router = useRouter()
   const { id } = router.query
@@ -46,7 +53,7 @@ export default function AlfajorDetailPage() {
       <StarRating rating={alfajor.rating || 0} />
       <p className="whitespace-pre-line rounded bg-white p-3 shadow">{alfajor.review || 'Sin reseña'}</p>
       <p className="text-sm text-slate-500">
-        Degustado: {new Date(alfajor.tasted_at).toLocaleString('es-AR')}
+        Degustado: {formatDegustadoEn(alfajor.degustado_en)}
       </p>
       <div className="flex gap-3">
         <Link href={`/edit/${alfajor.id}`} className="rounded bg-blue-600 px-4 py-2 text-white">
