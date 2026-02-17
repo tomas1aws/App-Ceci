@@ -1,7 +1,19 @@
+import { useEffect } from 'react'
 import Head from 'next/head'
 import '../styles/globals.css'
 
 export default function App({ Component, pageProps }) {
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker
+        .getRegistrations()
+        .then((registrations) => registrations.forEach((registration) => registration.unregister()))
+        .catch(() => {
+          // noop: debug page muestra errores de red; no rompemos UI por cleanup de SW
+        })
+    }
+  }, [])
+
   return (
     <>
       <Head>
