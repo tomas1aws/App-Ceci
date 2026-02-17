@@ -38,8 +38,18 @@ create table if not exists alfajores (
   rating integer,
   review text,
   tasted_at timestamp with time zone default now(),
+  degustado_en date,
   created_at timestamp with time zone default now()
 );
+```
+
+
+
+### Migración sugerida
+
+```sql
+alter table public.alfajores
+add column if not exists degustado_en date;
 ```
 
 ## Storage Supabase

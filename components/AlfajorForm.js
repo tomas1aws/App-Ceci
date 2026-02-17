@@ -8,6 +8,7 @@ export default function AlfajorForm({ onSubmit, initialValues = {}, submitText =
   const [rating, setRating] = useState(initialValues.rating || 0)
   const [review, setReview] = useState(initialValues.review || '')
   const [imagePath, setImagePath] = useState(initialValues.image_path || '')
+  const [degustadoEn, setDegustadoEn] = useState(initialValues.degustado_en || '')
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
 
@@ -34,7 +35,14 @@ export default function AlfajorForm({ onSubmit, initialValues = {}, submitText =
     setErrorMessage('')
 
     try {
-      await onSubmit({ name, brand, rating, review, image_path: imagePath })
+      await onSubmit({
+        name,
+        brand,
+        rating,
+        review,
+        image_path: imagePath,
+        degustado_en: degustadoEn || null,
+      })
     } catch (error) {
       setErrorMessage(error.message)
     } finally {
@@ -68,6 +76,16 @@ export default function AlfajorForm({ onSubmit, initialValues = {}, submitText =
           rows={4}
           value={review}
           onChange={(e) => setReview(e.target.value)}
+        />
+      </div>
+      <div>
+        <label className="mb-1 block text-sm font-medium">Fecha de degustación</label>
+        <input
+          type="date"
+          name="degustado_en"
+          className="w-full rounded border p-2"
+          value={degustadoEn}
+          onChange={(e) => setDegustadoEn(e.target.value)}
         />
       </div>
       <div>
