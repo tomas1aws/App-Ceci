@@ -33,9 +33,22 @@ export default function AlfajorDetailPage() {
   }, [id])
 
   async function handleDelete() {
+    setError('')
+
+    if (!id) {
+      setError('Missing alfajor id')
+      return
+    }
+
     if (!window.confirm('¿Eliminar este alfajor?')) return
-    await deleteAlfajor(id)
-    router.push('/')
+
+    try {
+      await deleteAlfajor(id, alfajor?.image_path)
+      await router.push('/')
+      router.reload()
+    } catch (err) {
+      setError(err.message)
+    }
   }
 
   if (error) return <main className="p-4 text-red-600">{error}</main>
