@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
-import { supabaseConfigError, supabaseUrl, supabaseAnonKey } from '../lib/supabaseClient'
+import { rawUrl, supabaseUrl, supabaseKey } from '../lib/supabaseClient'
 
 function maskKey(value) {
   if (!value) return '(vacía)'
@@ -40,10 +40,10 @@ export default function DebugPage() {
   const [running, setRunning] = useState(false)
 
   const headers = useMemo(() => {
-    if (!supabaseAnonKey) return {}
+    if (!supabaseKey) return {}
     return {
-      apikey: supabaseAnonKey,
-      Authorization: `Bearer ${supabaseAnonKey}`
+      apikey: supabaseKey,
+      Authorization: `Bearer ${supabaseKey}`
     }
   }, [])
 
@@ -52,16 +52,6 @@ export default function DebugPage() {
 
   async function runDiagnostics() {
     setRunning(true)
-
-    if (!supabaseUrl || !supabaseAnonKey) {
-      const envError = supabaseConfigError || 'Faltan variables públicas de Supabase.'
-      const envFailure = { ok: false, status: null, error: envError, bodySnippet: null }
-      setRestResult(envFailure)
-      setStorageResult(envFailure)
-      setServerResult({ ok: false, status: null, error: envError, bodySnippet: null })
-      setRunning(false)
-      return
-    }
 
     const [rest, storage, server] = await Promise.all([
       runFetch(restUrl, headers),
@@ -90,13 +80,21 @@ export default function DebugPage() {
         <h2 className="mb-3 text-lg font-semibold">Variables runtime (frontend)</h2>
         <ul className="space-y-2 text-sm">
           <li>
-            <strong>NEXT_PUBLIC_SUPABASE_URL:</strong> {supabaseUrl || '(vacía)'}
+            <strong>NEXT_PUBLIC_SUPABASE_URL (raw JSON.stringify):</strong> {JSON.stringify(rawUrl)}
           </li>
           <li>
-            <strong>NEXT_PUBLIC_SUPABASE_ANON_KEY:</strong> {maskKey(supabaseAnonKey)}
+            <strong>NEXT_PUBLIC_SUPABASE_URL (trimmed):</strong> {supabaseUrl || '(vacía)'}
+          </li>
+          <li>
+            <strong>NEXT_PUBLIC_SUPABASE_URL.length:</strong> {supabaseUrl.length}
+          </li>
+          <li>
+            <strong>NEXT_PUBLIC_SUPABASE_ANON_KEY:</strong> {maskKey(supabaseKey)}
+          </li>
+          <li>
+            <strong>NEXT_PUBLIC_SUPABASE_ANON_KEY.length:</strong> {supabaseKey.length}
           </li>
         </ul>
-        {supabaseConfigError && <p className="mt-3 text-sm text-red-600">{supabaseConfigError}</p>}
       </section>
 
       <button
@@ -137,6 +135,26 @@ function ResultCard({ title, result }) {
             <p className="break-all text-red-600">
               <strong>error:</strong> {result.error}
             </p>
+          )}
+          {result.message && (
+            <p className="break-all text-red-600">
+              <strong>message:</strong> {result.message}
+            </p>
+          )}
+          {result.name && (
+            <p className="break-all text-red-600">
+              <strong>name:</strong> {result.name}
+            </p>
+          )}
+          {result.cause && (
+            <pre className="overflow-auto rounded bg-red-50 p-2 whitespace-pre-wrap text-red-700">
+              <strong>cause:</strong> {JSON.stringify(result.cause, null, 2)}
+            </pre>
+          )}
+          {result.stackSnippet && (
+            <pre className="overflow-auto rounded bg-red-50 p-2 whitespace-pre-wrap text-red-700">
+              <strong>stackSnippet:</strong> {result.stackSnippet}
+            </pre>
           )}
           {result.bodySnippet && (
             <pre className="overflow-auto rounded bg-slate-100 p-2 whitespace-pre-wrap">

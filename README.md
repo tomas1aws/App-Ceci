@@ -78,6 +78,12 @@ npm run build
 npm start
 ```
 
+
+### Variables de entorno en Vercel (evitar espacios/saltos de línea)
+- Cargar `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY` **sin espacios al inicio/fin** y **sin saltos de línea**.
+- Un espacio o `\n` extra puede romper fetch con errores como `Failed to fetch` / `fetch failed`.
+- Recomendado: pegar el valor en una sola línea y verificar en `/debug` el `JSON.stringify(...)` y los `length` para confirmar que están limpios.
+
 ## Deploy en Vercel (pasos recomendados)
 1. Importar repo en Vercel.
 2. Configurar variables de entorno de proyecto (Production y Preview):
