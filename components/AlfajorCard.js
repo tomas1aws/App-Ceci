@@ -4,7 +4,7 @@ import StarRating from './StarRating'
 export default function AlfajorCard({ alfajor }) {
   return (
     <Link
-      href={`/alfajores/${alfajor.id}`}
+      href={`/alfajor/${alfajor.id}`}
       className="overflow-hidden rounded-xl bg-white shadow transition hover:shadow-md"
     >
       <img
